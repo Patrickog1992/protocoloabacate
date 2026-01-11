@@ -11,6 +11,7 @@ export interface Message {
   type: MessageType;
   content?: string;
   mediaUrl?: string;
+  thumbnailUrl?: string;
   timestamp: Date;
 }
 

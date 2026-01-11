@@ -69,7 +69,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
 
         {message.type === 'video' && message.mediaUrl && (
           <div className="mb-1">
-            <video controls className="rounded-lg w-full h-auto">
+            <video 
+              controls 
+              playsInline 
+              webkit-playsinline="true"
+              poster={message.thumbnailUrl}
+              className="rounded-lg w-full h-auto"
+            >
               <source src={message.mediaUrl} type="video/mp4" />
               Seu navegador não suporta vídeos.
             </video>
@@ -81,7 +87,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
           <div className="min-w-[200px] md:min-w-[250px]">
              <audio 
                 ref={audioRef}
-                controls 
+                controls
+                autoPlay
+                preload="auto"
                 className="w-full"
                 onEnded={onAudioEnded}
              >

@@ -15,7 +15,8 @@ export const ChatPage: React.FC = () => {
     sender: 'bot' | 'user' | 'system',
     type: MessageType,
     content?: string,
-    mediaUrl?: string
+    mediaUrl?: string,
+    thumbnailUrl?: string
   ) => {
     const newMessage: Message = {
       id: Math.random().toString(36).substr(2, 9),
@@ -23,6 +24,7 @@ export const ChatPage: React.FC = () => {
       type,
       content,
       mediaUrl,
+      thumbnailUrl,
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, newMessage]);
@@ -143,7 +145,10 @@ export const ChatPage: React.FC = () => {
            await new Promise(r => setTimeout(r, 1500));
            addMessage('bot', 'text', 'E a Maria conseguiu eliminar a diabetes tipo 2, deixando para trás as picadas no dedo e o uso de remédios....');
            await new Promise(r => setTimeout(r, 800));
-           addMessage('bot', 'video', undefined, 'https://i.imgur.com/dbLffd4.mp4');
+           
+           // ADDED THUMBNAIL HERE
+           addMessage('bot', 'video', undefined, 'https://i.imgur.com/dbLffd4.mp4', 'https://i.imgur.com/Yr0TOyu.jpeg');
+           
            await new Promise(r => setTimeout(r, 3000)); // Wait a bit for video presence
            addMessage('bot', 'text', `${userData.name}, eu tenho certeza que você vai ter resultados incríveis como elas tiveram!`);
            await new Promise(r => setTimeout(r, 800));
