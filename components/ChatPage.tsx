@@ -416,7 +416,7 @@ export const ChatPage: React.FC = () => {
                  SIM EU QUERO
              </button>
         ) : step === ChatStep.FINAL_CTA ? (
-             <a href="https://pay.kiwify.com.br/5j1fD0L" target="_blank" rel="noopener noreferrer" className="w-full block text-center bg-green-600 text-white font-bold py-3 rounded-full hover:bg-green-700 transition animate-pulse">
+             <a href="https://go.perfectpay.com.br/PPU38CQ5SG6" target="_blank" rel="noopener noreferrer" className="w-full block text-center bg-green-600 text-white font-bold py-3 rounded-full hover:bg-green-700 transition animate-pulse">
                  QUERO COMEÇAR AGORA!
              </a>
         ) : (
