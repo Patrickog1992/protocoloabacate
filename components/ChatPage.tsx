@@ -99,6 +99,7 @@ export const ChatPage: React.FC = () => {
 
         case ChatStep.AUDIO_3:
            await new Promise(r => setTimeout(r, 1000));
+           // URL Updated per user request
            addMessage('bot', 'audio', undefined, 'https://storage.saudebemestarmais.com/typebot/public/workspaces/cm22oix9z000116z1ylpznldm/typebots/cmcrz6bff0012t8cjq3lpep98/blocks/dn7wpncg4472cr24czlx6i2y?v=1751824840976');
            break;
 
@@ -175,6 +176,7 @@ export const ChatPage: React.FC = () => {
 
         case ChatStep.AUDIO_BENEFITS:
             await new Promise(r => setTimeout(r, 1000));
+            // URL Updated per user request
             addMessage('bot', 'audio', undefined, 'https://storage.saudebemestarmais.com/typebot/public/workspaces/cm22oix9z000116z1ylpznldm/typebots/cmcrz6bff0012t8cjq3lpep98/blocks/iyi6c8tgole3v2v49bvmo1rl?v=1751825020589');
             break;
 

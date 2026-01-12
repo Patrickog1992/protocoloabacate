@@ -31,7 +31,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
       // 1. Attempt immediately on mount
       attemptPlay();
 
-      // 2. Set up an interval to keep trying every 500ms
+      // 2. Set up an interval to keep trying every 250ms (Faster retry)
       // This handles cases where the network is slow or the browser needs a moment
       const intervalId = setInterval(() => {
         if (audio.paused) {
@@ -40,7 +40,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
           // If it's playing, we can stop hammering the play button
           clearInterval(intervalId);
         }
-      }, 500);
+      }, 250);
 
       // 3. Safety timeout: Stop trying after 8 seconds to save resources/battery
       // if the user really doesn't want to play it or policy is strictly blocking.
@@ -117,9 +117,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
                 controls
                 autoPlay
                 preload="auto"
-                playsInline
+                // playsInline removed as it's not standard for audio and might cause issues
                 className="w-full"
                 onEnded={onAudioEnded}
+                onLoadedMetadata={() => {
+                   // Trigger when metadata loads
+                   audioRef.current?.play().catch(() => {});
+                }}
                 onCanPlay={() => {
                    // Extra trigger when enough data is loaded
                    audioRef.current?.play().catch(() => {});
