@@ -15,17 +15,24 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
   // Format time HH:MM
   const timeString = message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+  // Robust Autoplay Logic for Mobile
   useEffect(() => {
     if (message.type === 'audio' && audioRef.current) {
-        // Attempt autoplay, but handle browser blocking gracefully
-        // The user might need to click play, but once it plays and ends, the flow continues.
-        const playPromise = audioRef.current.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(() => {
-                // Auto-play was prevented. This is expected in many browsers.
-                // User will click play manually.
-            });
+      const audio = audioRef.current;
+      
+      const attemptPlay = async () => {
+        try {
+          await audio.play();
+        } catch (err) {
+          console.warn("Autoplay prevented, retrying in 1s...", err);
+          // Retry once for mobile connection lag
+          setTimeout(() => {
+             audio.play().catch(e => console.error("Retry failed", e));
+          }, 1000);
         }
+      };
+
+      attemptPlay();
     }
   }, [message.type]);
 
@@ -72,9 +79,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
             <video 
               controls 
               playsInline 
-              webkit-playsinline="true"
+              {...{ "webkit-playsinline": "true" } as any} /* Force iOS inline */
               poster={message.thumbnailUrl}
-              className="rounded-lg w-full h-auto"
+              className="rounded-lg w-full h-auto bg-black"
+              style={{ width: '100%', maxHeight: '400px' }}
             >
               <source src={message.mediaUrl} type="video/mp4" />
               Seu navegador não suporta vídeos.
@@ -90,8 +98,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
                 controls
                 autoPlay
                 preload="auto"
+                playsInline
                 className="w-full"
                 onEnded={onAudioEnded}
+                onLoadedData={() => {
+                   // Double ensure play starts when data is ready
+                   audioRef.current?.play().catch(() => {});
+                }}
              >
                 <source src={message.mediaUrl} type="audio/mpeg" />
                 Seu navegador não suporta áudio.
