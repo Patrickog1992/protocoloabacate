@@ -105,7 +105,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onCtaClick }) => {
 
       <div className="flex flex-col items-center justify-start flex-1 text-gray-900 px-4 py-8 max-w-2xl mx-auto w-full">
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-red-600 leading-tight">
-          ESSE TRUQUE DO ABACATE ESTÁ MELHORANDO A DIABETES TIPO 2 DA POPULAÇÃO
+          ESSE TRUQUE DO ABACATE ESTÁ MELHORANDO A TIPO 2 DA POPULAÇÃO
         </h1>
         
         <p className="text-lg text-center mb-6 font-medium text-gray-700">
