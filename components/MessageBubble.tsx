@@ -15,24 +15,43 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
   // Format time HH:MM
   const timeString = message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // Robust Autoplay Logic for Mobile
+  // Robust Autoplay Logic for Mobile (Aggressive Mode)
   useEffect(() => {
     if (message.type === 'audio' && audioRef.current) {
       const audio = audioRef.current;
       
-      const attemptPlay = async () => {
-        try {
-          await audio.play();
-        } catch (err) {
-          console.warn("Autoplay prevented, retrying in 1s...", err);
-          // Retry once for mobile connection lag
-          setTimeout(() => {
-             audio.play().catch(e => console.error("Retry failed", e));
-          }, 1000);
-        }
+      const attemptPlay = () => {
+        // We catch errors because mobile browsers throw exceptions if autoplay is blocked
+        // by policy or if the media isn't ready. We just want to keep trying.
+        audio.play().catch(() => {
+          // console.log("Autoplay attempt failed, retrying...");
+        });
       };
 
+      // 1. Attempt immediately on mount
       attemptPlay();
+
+      // 2. Set up an interval to keep trying every 500ms
+      // This handles cases where the network is slow or the browser needs a moment
+      const intervalId = setInterval(() => {
+        if (audio.paused) {
+          attemptPlay();
+        } else {
+          // If it's playing, we can stop hammering the play button
+          clearInterval(intervalId);
+        }
+      }, 500);
+
+      // 3. Safety timeout: Stop trying after 8 seconds to save resources/battery
+      // if the user really doesn't want to play it or policy is strictly blocking.
+      const timeoutId = setTimeout(() => {
+        clearInterval(intervalId);
+      }, 8000);
+
+      return () => {
+        clearInterval(intervalId);
+        clearTimeout(timeoutId);
+      };
     }
   }, [message.type]);
 
@@ -101,8 +120,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, onAudioEn
                 playsInline
                 className="w-full"
                 onEnded={onAudioEnded}
-                onLoadedData={() => {
-                   // Double ensure play starts when data is ready
+                onCanPlay={() => {
+                   // Extra trigger when enough data is loaded
                    audioRef.current?.play().catch(() => {});
                 }}
              >
