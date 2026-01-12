@@ -99,12 +99,14 @@ export const ChatPage: React.FC = () => {
 
         case ChatStep.AUDIO_3:
            await new Promise(r => setTimeout(r, 1000));
-           // URL Updated per user request
-           addMessage('bot', 'audio', undefined, 'https://storage.saudebemestarmais.com/typebot/public/workspaces/cm22oix9z000116z1ylpznldm/typebots/cmcrz6bff0012t8cjq3lpep98/blocks/dn7wpncg4472cr24czlx6i2y?v=1751824840976');
+           // CHANGED: Audio replaced by Text as requested
+           addMessage('bot', 'text', 'Eu que eles querem colocar na sua cabeça que não é possível reverter a diabetes e o pior de tudo querem que você gaste milhares de reais com remédios, mas não é bem assim na verdade é totalmente possível se curar da diabetes comendo tudo que você gosta, basta tomar um copo dessa secreta receita antes de dormir');
+           // Reading delay since it's now text
+           await new Promise(r => setTimeout(r, 6000));
+           setStep(ChatStep.ASK_SYMPTOMS);
            break;
 
         case ChatStep.ASK_SYMPTOMS:
-           // Triggered by audio 3 ending
            addMessage('bot', 'text', `Para te enviar a melhor\nreceita, me diga ${userData.name}`);
            await new Promise(r => setTimeout(r, 800));
            addMessage('bot', 'text', `Você sofre com\nalgum desses sintomas?\n👉🏼 Cansaço constante\n👉🏼 Sede excessiva\n👉🏼 Visão embaçada\n👉🏼 Formigamento\n👉🏼 Dores no Corpo\n👉🏼 Formigamento\n👉🏼 Infecções recorrentes\n👉🏼 Fome extrema\n👉🏼 Mudanças de humor`);
@@ -171,17 +173,14 @@ export const ChatPage: React.FC = () => {
 
         case ChatStep.PROTOCOL_BENEFITS:
             addMessage('bot', 'text', 'Veja os principais benefícios do Protocolo Truque do Abacate…\n✅ Cura total da diabetes\n✅ Controla os níveis de açúcar no sangue\n✅ Elimina as dores e formigamentos\n✅ Aumenta a expectativa de vida\n✅ Fim dos medicamentos\n✅ Melhor qualidade de vida\n✅ Evita infecções na pele\n✅ Melhora a ansiedade\n✅ Ação anti-envelhecimento\n✅ Reduz a gordura do corpo\n✅ Elimina a gordura no fígado');
-            setStep(ChatStep.AUDIO_BENEFITS);
+            // CHANGED: Skipped audio step here as requested
+            await new Promise(r => setTimeout(r, 3000)); // Delay to read list
+            setStep(ChatStep.ASK_WANT_BENEFITS);
             break;
 
-        case ChatStep.AUDIO_BENEFITS:
-            await new Promise(r => setTimeout(r, 1000));
-            // URL Updated per user request
-            addMessage('bot', 'audio', undefined, 'https://storage.saudebemestarmais.com/typebot/public/workspaces/cm22oix9z000116z1ylpznldm/typebots/cmcrz6bff0012t8cjq3lpep98/blocks/iyi6c8tgole3v2v49bvmo1rl?v=1751825020589');
-            break;
+        // ChatStep.AUDIO_BENEFITS removed
 
         case ChatStep.ASK_WANT_BENEFITS:
-             // Triggered by audio end
              addMessage('bot', 'text', `${userData.name}, você gostaria de ter todos os benefícios do Protocolo Truque do Abacate?`);
              setStep(ChatStep.WAIT_WANT_BENEFITS);
              break;
@@ -278,7 +277,7 @@ export const ChatPage: React.FC = () => {
     // Logic to proceed to next step or next audio in series
     if (step === ChatStep.AUDIO_1) setStep(ChatStep.INTRO_REPORT);
     else if (step === ChatStep.AUDIO_2) setStep(ChatStep.INDUSTRY_SECRET);
-    else if (step === ChatStep.AUDIO_3) setStep(ChatStep.ASK_SYMPTOMS);
+    // Audio 3 is now text, so logic is inside the useEffect loop
     else if (step === ChatStep.AUDIOS_SERIES_1) {
         if (currentAudioSeriesIndex < audioSeries1.length - 1) {
             const nextIdx = currentAudioSeriesIndex + 1;
@@ -299,9 +298,7 @@ export const ChatPage: React.FC = () => {
             setStep(ChatStep.PROTOCOL_BENEFITS);
         }
     }
-    else if (step === ChatStep.AUDIO_BENEFITS) {
-        setStep(ChatStep.ASK_WANT_BENEFITS);
-    }
+    // Audio Benefits removed
     else if (step === ChatStep.AUDIOS_SERIES_2) {
         if (currentAudioSeriesIndex < audioSeries2.length - 1) {
             const nextIdx = currentAudioSeriesIndex + 1;
@@ -335,10 +332,10 @@ export const ChatPage: React.FC = () => {
     const audioSteps = [
         ChatStep.AUDIO_1,
         ChatStep.AUDIO_2,
-        ChatStep.AUDIO_3,
+        // ChatStep.AUDIO_3, // Removed (Now Text)
         ChatStep.AUDIOS_SERIES_1,
         ChatStep.PROTOCOL_AUDIOS,
-        ChatStep.AUDIO_BENEFITS,
+        // ChatStep.AUDIO_BENEFITS, // Removed
         ChatStep.AUDIOS_SERIES_2,
         ChatStep.PROPOSAL_AUDIOS
     ];
